@@ -63,6 +63,36 @@ var flyarea = document.getElementById('flyarea');
 
 $(document).ready(function() {
 
+  // Make a request to grab a token from the server
+  $.getJSON('/token', {
+    device: playerId
+  }, tokenResponse => {
+    // Use our token to authenticate with Twilio
+    accessManager = new Twilio.AccessManager(tokenResponse.token);
+    syncClient = new Twilio.Sync.Client(accessManager);
+
+    // Create a 'playersMap' sync object.
+    syncClient.map('playersMap')
+      .then(map => {
+        playersMap = map;
+
+        // Create a new bird on the screen when an item is added to the map.
+        playersMap.on('itemAdded', item => {
+          if (playerId !== item.key) {
+            var newBird = createBird(item);
+            flyarea.appendChild(newBird);
+          }
+        })
+
+        // When an item is updated, reset the div with that item's ID.
+        playersMap.on('itemUpdated', item => {
+          if (playerId !== item.key) {
+            $(`#${item.key}`).css({ rotate: item.value.rotate, top: item.value.top });
+          }
+        })
+      })
+  })
+
   if(window.location.search == "?debug")
     debugmode = true;
   if(window.location.search == "?easy")
@@ -78,7 +108,7 @@ $(document).ready(function() {
 });
 
 // Creates a new div for a bird on the screen. Returns this div.
-function createBird() {
+function createBird(item) {
   var div = document.createElement('div');
   div.id = item.key;
   div.className = 'bird animated';
@@ -159,6 +189,17 @@ function startGame() {
 function updatePlayer(player) {
   //rotation
   rotation = Math.min((velocity / 10) * 90, 90);
+
+  // Update the playersMap with this bird's current status.
+  // This will be called on every game loop (so every frame of the game).
+  if (playersMap) {
+    playersMap.set(playerId, {
+      rotate: rotation,
+      top: position,
+      id: playerId
+    });
+  }
+
   //apply rotation and position
   $(player).css({ rotate: rotation, top: position });
 }
