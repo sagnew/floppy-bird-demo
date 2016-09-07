@@ -339,10 +339,12 @@ function setMedal() {
 }
 
 function playerDead() {
-  playersMap.mutate(playerId, data => {
-    data.top = -2000
-      return data
-  })
+  if (playersMap) {
+    playersMap.mutate(playerId, data => {
+      data.top = -2000
+        return data
+    })
+  }
   //stop animating everything!
   $(".animated").css('animation-play-state', 'paused');
   $(".animated").css('-webkit-animation-play-state', 'paused');
