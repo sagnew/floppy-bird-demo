@@ -1,46 +1,59 @@
-Floppy Bird
-=========
-Initially, I wanted to try recreating Flappy Bird in HTML5, using a canvas and recycling the assets from the old game.
+# Sync Quickstart for Node.js
 
-What I did instead is something way more primitive. This project uses nothing but good ol' div's for all the objects and graphics, will scale perfectly on almost any screen (mobile and desktop), is terribly unoptimized, laggy, and isn't nearly as fast as it would've been if I had just used a canvas instead. But here it is!
+This application should give you a ready-made starting point for writing your
+own real-time apps with Sync. Before we begin, we need to collect
+all the config values we need to run the application:
 
-Live App
-------------
-Check out a live preview of it over here:  
-http://nebez.github.io/floppybird/
+| Config Value  | Description |
+| :-------------  |:------------- |
+Service Instance SID | Like a database for your Sync data - generate one with the curl command below.
+Account SID | Your primary Twilio account identifier - find this [in the console here](https://www.twilio.com/console).
+API Key | Used to authenticate - [Use the IP Messaging dev tools to generate one here](https://www.twilio.com/user/account/ip-messaging/dev-tools/api-keys).
+API Secret | Used to authenticate - [just like the above, you'll get one here](https://www.twilio.com/user/account/ip-messaging/dev-tools/api-keys).
 
-Cool Stuff
----------
-*Some cool things other people have done with the code. Let me know about your projects and I'll link it here*  
-https://github.com/rukmal/FlappyLeapBird - **[Rukmal](http://rukmal.me/)** integrated LeapMotion Controller functionality! Check out his website, he's done some cool stuff.  
-http://chrisbeaumont.github.io/floppybird/ - **[@chrisbeaumont](https://github.com/chrisbeaumont)** made an awesome auto-pilot, check it out  
-http://www.lobe.io/flappy-math-saga/- **[@tikwid](https://github.com/tikwid)** made a really cool version designed to teach you times tables. really cool.  
-http://dota2.cyborgmatt.com/flappydota/ - flappy dota, this one is really cool.
-http://tippy.gochiusa.net/ - Japanese anime inspired floppybird.
+## Temporary: Generating a Service Instance
 
-Credits
-------
-**[@aregowe](https://github.com/aregowe)** for optimizing all the assets
+During the Sync developer preview, you will need to generate Sync service
+instances via API until the Console GUI is available. Using the API key pair you
+generated above, generate a service instance via REST API with this curl command:
 
-Notice
-=====
-The assets powering the visual element of the game have all been extracted directly from the Flappy Bird android game. I have only done the coding, not designed the visual elements.  
-I do not own the assets, nor do I have explicit permission to use them from their creator. They are the work and copyright of original creator Dong Nguyen and .GEARS games (http://www.dotgears.com/).  
-I took this Tweet (https://twitter.com/dongatory/status/431060041009856512 / http://i.imgur.com/AcyWyqf.png) by Dong Nguyen, the creator of the game, as an open invitation to reuse the game concept and assets in an open source project. There is no ill intention to steal the game, or claim it as my own. This is merely a recreation for fun.  
-If the copyright holder would like for the assets to be removed, let me know!
+```bash
+curl -X POST https://preview.twilio.com/Sync/Services \
+ -d 'FriendlyName=MySyncServiceInstance' \
+ -u 'SKXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:your_api_secret'
+```
 
+## A Note on API Keys
 
-License
-=====
-Copyright 2014 Nebez Briefkani
+When you generate an API key pair at the URLs above, your API Secret will only
+be shown once - make sure to save this in a secure location, 
+or possibly your `~/.bash_profile`.
 
-Licensed under the Apache License, Version 2.0 (the "License");  
-you may not use this file except in compliance with the License.  
-You may obtain a copy of the License at  
-http://www.apache.org/licenses/LICENSE-2.0
+## Setting Up The Node.js Application
 
-Unless required by applicable law or agreed to in writing, software  
-distributed under the License is distributed on an "AS IS" BASIS,  
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
-See the License for the specific language governing permissions and  
-limitations under the License.
+Create a configuration file for your application:
+
+```bash
+cp config.sample.js config.js
+```
+
+Edit `config.js` with the four configuration parameters we gathered from above.
+
+Next, we need to install our dependencies from npm:
+
+```bash
+npm install
+```
+
+Now we should be all set! Run the application using the `node` command.
+
+```bash
+node .
+```
+
+Your application should now be running at http://localhost:3000. Open this page
+in a couple browsers or tabs, and start syncing!
+
+## License
+
+MIT
