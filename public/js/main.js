@@ -54,7 +54,44 @@ buzz.all().setVolume(volume);
 var loopGameloop;
 var loopPipeloop;
 
+var accessManager
+var syncClient
+var playersMap
+var playerId
+var flyarea = document.getElementById('flyarea')
+
 $(document).ready(function() {
+  playerId = getDeviceId()
+
+  $.getJSON('/token', {
+    device: playerId
+  }, tokenResponse => {
+    accessManager = new Twilio.AccessManager(tokenResponse.token)
+    syncClient = new Twilio.Sync.Client(accessManager)
+
+    syncClient.map('playersMap')
+      .then(map => {
+        playersMap = map
+
+        playersMap.on('itemAdded', item => {
+          if (playerId !== item.key) {
+            var div = document.createElement('div')
+            div.id = item.key
+            div.className = 'bird animated'
+            div.style.left = `${Math.floor(Math.random() * 600)}px`
+            flyarea.appendChild(div)
+          }
+        })
+
+        playersMap.on('itemUpdated', item => {
+          if (playerId !== item.key) {
+            $(`#${item.key}`).css({ rotate: item.value.rotate, top: item.value.top })
+          }
+        })
+      })
+  })
+
+
    if(window.location.search == "?debug")
       debugmode = true;
    if(window.location.search == "?easy")
@@ -149,6 +186,14 @@ function updatePlayer(player)
 {
    //rotation
    rotation = Math.min((velocity / 10) * 90, 90);
+   
+  if (playersMap) {
+    playersMap.set(playerId, {
+      rotate: rotation,
+      top: position,
+      id: playerId
+    })
+  }
    
    //apply rotation and position
    $(player).css({ rotate: rotation, top: position });
@@ -347,6 +392,10 @@ function setMedal()
 
 function playerDead()
 {
+  playersMap.mutate(playerId, data => {
+    data.top = -2000
+    return data
+  })
    //stop animating everything!
    $(".animated").css('animation-play-state', 'paused');
    $(".animated").css('-webkit-animation-play-state', 'paused');
@@ -497,3 +546,11 @@ var isIncompatible = {
    return (isIncompatible.Android() || isIncompatible.BlackBerry() || isIncompatible.iOS() || isIncompatible.Opera() || isIncompatible.Safari() || isIncompatible.Windows());
    }
 };
+
+function getDeviceId() {
+  return 'browser-' + 
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+}
