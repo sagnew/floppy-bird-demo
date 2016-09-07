@@ -78,7 +78,7 @@ $(document).ready(function() {
 });
 
 // Creates a new div for a bird on the screen. Returns this div.
-function createBird() {
+function createBird(item) {
   var div = document.createElement('div');
   div.id = item.key;
   div.className = 'bird animated';
