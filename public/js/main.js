@@ -497,3 +497,11 @@ var isIncompatible = {
    return (isIncompatible.Android() || isIncompatible.BlackBerry() || isIncompatible.iOS() || isIncompatible.Opera() || isIncompatible.Safari() || isIncompatible.Windows());
    }
 };
+
+function createBird(item) {
+  var div = document.createElement('div');
+  div.id = item.key;
+  div.className = 'bird animated';
+  div.style.left = `${Math.floor(Math.random() * 600)}px`;
+  return div;
+}
