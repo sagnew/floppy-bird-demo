@@ -54,6 +54,13 @@ buzz.all().setVolume(volume);
 var loopGameloop;
 var loopPipeloop;
 
+// Variables
+var playerId = getDeviceId();
+var accessManager;
+var syncClient;
+var playersMap;
+var flyarea = document.getElementById('flyarea');
+
 $(document).ready(function() {
    if(window.location.search == "?debug")
       debugmode = true;
