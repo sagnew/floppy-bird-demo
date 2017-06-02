@@ -489,6 +489,14 @@ var isIncompatible = {
   }
 };
 
+function createBird(item) {
+  var div = document.createElement('div');
+  div.id = item.key;
+  div.className = 'bird animated';
+  div.style.left = `${Math.floor(Math.random() * 600)}px`;
+  return div;
+}
+
 function getDeviceId() {
   return 'browser-' +
     'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
