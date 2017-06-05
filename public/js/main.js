@@ -64,12 +64,9 @@ var flyarea = document.getElementById('flyarea');
 $(document).ready(function() {
 
   // Make a request to grab a token from the server
-  $.getJSON('/token', {
-    device: playerId
-  }, tokenResponse => {
+  $.getJSON('/token', {}, tokenResponse => {
     // Use our token to authenticate with Twilio
-    accessManager = new Twilio.AccessManager(tokenResponse.token);
-    syncClient = new Twilio.Sync.Client(accessManager);
+    syncClient = new Twilio.Sync.Client(tokenResponse.token);
 
     // Create a 'playersMap' sync object.
     syncClient.map('playersMap')
